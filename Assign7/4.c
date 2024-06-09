@@ -65,6 +65,7 @@ int main() {
     int choice;
     printf("1. Gauss Elimination with Pivoting\n2. Gauss Jordan\nEnter your choice: ");
     scanf("%d", &choice);
+    printf("%d", choice);
     switch(choice) {
         case 1:
             gauss_elimination_pivot(m);

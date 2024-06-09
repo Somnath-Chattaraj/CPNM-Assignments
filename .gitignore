@@ -1,0 +1,20 @@
+# Ignore Visual Studio Code settings directory
+.vscode/
+
+# Ignore macOS-specific files
+.DS_Store
+
+# Ignore compiled binaries and object files
+*.o
+*.out
+*.exe
+
+# Ignore other temporary files
+*.log
+*.tmp
+*.swp
+
+# Ignore build directories
+/build/
+/Debug/
+/Release/
