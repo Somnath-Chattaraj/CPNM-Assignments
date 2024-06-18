@@ -1,85 +1,63 @@
 #include <stdio.h>
 
-#define N 3
+void invertMatrix(double a[3][3], double inverse[3][3]) {
+    int n = 3;
+    double temp;
 
-void getCofactor(float A[N][N], float temp[N][N], int p, int q, int n) {
-    int i = 0, j = 0;
-    for (int row = 0; row < n; row++) {
-        for (int col = 0; col < n; col++) {
-            if (row != p && col != q) {
-                temp[i][j++] = A[row][col];
-                if (j == n - 1) {
-                    j = 0;
-                    i++;
+    double identity[3][3] = {
+        {1, 0, 0},
+        {0, 1, 0},
+        {0, 0, 1}
+    };
+
+    for (int i = 0; i < n; i++) {
+        temp = a[i][i];
+        for (int j = 0; j < n; j++) {
+            a[i][j] = a[i][j] / temp;
+            identity[i][j] = identity[i][j] / temp;
+        }
+        for (int k = 0; k < n; k++) {
+            if (k != i) {
+                temp = a[k][i];
+                for (int j = 0; j < n; j++) {
+                    a[k][j] = a[k][j] - a[i][j] * temp;
+                    identity[k][j] = identity[k][j] - identity[i][j] * temp;
                 }
             }
         }
     }
+
+    for (int i = 0; i < n; i++)
+        for (int j = 0; j < n; j++)
+            inverse[i][j] = identity[i][j];
 }
 
-float determinant(float A[N][N], int n) {
-    float D = 0;
-    if (n == 1)
-        return A[0][0];
+void matrixInversionMethod() {
+    double a[3][3] = {
+        {1, 1, 1},
+        {1, 1, -1},
+        {1, -1, 1}
+    };
+    double b[3] = {6, 0, 2};
+    double inverse[3][3];
+    double x[3];
 
-    float temp[N][N];
-    int sign = 1;
-    for (int f = 0; f < n; f++) {
-        getCofactor(A, temp, 0, f, n);
-        D += sign * A[0][f] * determinant(temp, n - 1);
-        sign = -sign;
-    }
-    return D;
-}
+    invertMatrix(a, inverse);
 
-void adjoint(float A[N][N], float adj[N][N]) {
-    if (N == 1) {
-        adj[0][0] = 1;
-        return;
-    }
-
-    int sign = 1;
-    float temp[N][N];
-    for (int i = 0; i < N; i++) {
-        for (int j = 0; j < N; j++) {
-            getCofactor(A, temp, i, j, N);
-            sign = ((i + j) % 2 == 0) ? 1 : -1;
-            adj[j][i] = (sign) * (determinant(temp, N - 1));
+    for (int i = 0; i < 3; i++) {
+        x[i] = 0;
+        for (int j = 0; j < 3; j++) {
+            x[i] += inverse[i][j] * b[j];
         }
     }
-}
 
-void inverse(float A[N][N], float inverse[N][N]) {
-    float det = determinant(A, N);
-    if (det == 0) {
-        printf("Singular matrix, can't find its inverse");
-        return;
+    printf("Solution by Matrix Inversion Method:\n");
+    for (int i = 0; i < 3; i++) {
+        printf("x[%d] = %lf\n", i, x[i]);
     }
-
-    float adj[N][N];
-    adjoint(A, adj);
-    for (int i = 0; i < N; i++)
-        for (int j = 0; j < N; j++)
-            inverse[i][j] = adj[i][j] / det;
-}
-
-void matrix_inversion(float A[N][N], float B[N]) {
-    float inv[N][N];
-    inverse(A, inv);
-
-    printf("\nSolution: ");
-    for (int i = 0; i < N; i++) {
-        float x = 0;
-        for (int j = 0; j < N; j++)
-            x += inv[i][j] * B[j];
-        printf("%f ", x);
-    }
-    printf("\n");
 }
 
 int main() {
-    float A[N][N] = {{3, 2, -4}, {2, 3, 3}, {5, -3, 1}};
-    float B[N] = {3, 15, 14};
-    matrix_inversion(A, B);
+    matrixInversionMethod();
     return 0;
 }
