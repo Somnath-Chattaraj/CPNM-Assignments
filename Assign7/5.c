@@ -1,63 +1,98 @@
 #include <stdio.h>
 
-void invertMatrix(double a[3][3], double inverse[3][3]) {
-    int n = 3;
-    double temp;
+// Function to calculate the determinant of a 3x3 matrix
+double determinant(double matrix[3][3]) {
+    double det;
+    det = matrix[0][0] * (matrix[1][1] * matrix[2][2] - matrix[1][2] * matrix[2][1]) -
+          matrix[0][1] * (matrix[1][0] * matrix[2][2] - matrix[1][2] * matrix[2][0]) +
+          matrix[0][2] * (matrix[1][0] * matrix[2][1] - matrix[1][1] * matrix[2][0]);
+    return det;
+}
 
-    double identity[3][3] = {
-        {1, 0, 0},
-        {0, 1, 0},
-        {0, 0, 1}
-    };
-
-    for (int i = 0; i < n; i++) {
-        temp = a[i][i];
-        for (int j = 0; j < n; j++) {
-            a[i][j] = a[i][j] / temp;
-            identity[i][j] = identity[i][j] / temp;
-        }
-        for (int k = 0; k < n; k++) {
-            if (k != i) {
-                temp = a[k][i];
-                for (int j = 0; j < n; j++) {
-                    a[k][j] = a[k][j] - a[i][j] * temp;
-                    identity[k][j] = identity[k][j] - identity[i][j] * temp;
+// Function to calculate the cofactor matrix
+void cofactor(double matrix[3][3], double temp[3][3], int p, int q, int n) {
+    int i = 0, j = 0;
+    for (int row = 0; row < n; row++) {
+        for (int col = 0; col < n; col++) {
+            if (row != p && col != q) {
+                temp[i][j++] = matrix[row][col];
+                if (j == n - 1) {
+                    j = 0;
+                    i++;
                 }
             }
         }
     }
-
-    for (int i = 0; i < n; i++)
-        for (int j = 0; j < n; j++)
-            inverse[i][j] = identity[i][j];
 }
 
-void matrixInversionMethod() {
-    double a[3][3] = {
-        {1, 1, 1},
-        {1, 1, -1},
-        {1, -1, 1}
-    };
-    double b[3] = {6, 0, 2};
-    double inverse[3][3];
-    double x[3];
-
-    invertMatrix(a, inverse);
-
-    for (int i = 0; i < 3; i++) {
-        x[i] = 0;
-        for (int j = 0; j < 3; j++) {
-            x[i] += inverse[i][j] * b[j];
-        }
+// Function to calculate the adjoint of a 3x3 matrix
+void adjoint(double matrix[3][3], double adj[3][3]) {
+    if (determinant(matrix) == 0) {
+        printf("Singular matrix, can't find its inverse\n");
+        return;
     }
 
-    printf("Solution by Matrix Inversion Method:\n");
+    double temp[3][3];
     for (int i = 0; i < 3; i++) {
-        printf("x[%d] = %lf\n", i, x[i]);
+        for (int j = 0; j < 3; j++) {
+            cofactor(matrix, temp, i, j, 3);
+            int sign = ((i + j) % 2 == 0) ? 1 : -1;
+            adj[j][i] = sign * determinant(temp);
+        }
+    }
+}
+
+// Function to calculate the inverse of a 3x3 matrix
+void inverse(double matrix[3][3], double inverse[3][3]) {
+    double det = determinant(matrix);
+    if (det == 0) {
+        printf("Singular matrix, can't find its inverse\n");
+        return;
+    }
+
+    double adj[3][3];
+    adjoint(matrix, adj);
+
+    for (int i = 0; i < 3; i++) {
+        for (int j = 0; j < 3; j++) {
+            inverse[i][j] = adj[i][j] / det;
+        }
+    }
+}
+
+// Function to multiply two matrices
+void multiply(double matrix1[3][3], double matrix2[3][1], double result[3][1]) {
+    for (int i = 0; i < 3; i++) {
+        for (int j = 0; j < 1; j++) {
+            result[i][j] = 0;
+            for (int k = 0; k < 3; k++) {
+                result[i][j] += matrix1[i][k] * matrix2[k][j];
+            }
+        }
     }
 }
 
 int main() {
-    matrixInversionMethod();
+    double A[3][3] = {
+        {1, 1, 1},
+        {1, 1, -1},
+        {1, -1, 1}
+    };
+    double B[3][1] = {
+        {6},
+        {0},
+        {2}
+    };
+    double invA[3][3];
+    double X[3][1];
+
+    inverse(A, invA);
+    multiply(invA, B, X);
+
+    printf("Solution using Matrix Inversion Method:\n");
+    printf("x = %lf\n", X[0][0]);
+    printf("y = %lf\n", X[1][0]);
+    printf("z = %lf\n", X[2][0]);
+
     return 0;
 }
