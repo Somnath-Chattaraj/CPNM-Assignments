@@ -1,28 +1,25 @@
 #include <stdio.h>
 #include <math.h>
 
-double func(double x) {
-    return x*x*x - x*x + 2;
+double f(double x) {
+    return x*x*x + 8*x - 4;
 }
 
-double derivFunc(double x) {
-    return 3*x*x - 2*x;
+double df(double x) {
+    return 3*x*x + 8;
 }
 
-void newtonRaphson(double x) {
-    double h = func(x) / derivFunc(x);
-    while (fabs(h) >= 0.000001) {
-        h = func(x)/derivFunc(x);
-        x = x - h;
+void newtonRaphson(double x0, double tol) {
+    double h = f(x0) / df(x0);
+    while (fabs(h) >= tol) {
+        h = f(x0) / df(x0);
+        x0 = x0 - h;
     }
-
-    printf("The value of the root is : %.6f\n", x);
+    printf("The root is: %.6lf\n", x0);
 }
 
 int main() {
-    double x0;
-    printf("Enter initial guess: ");
-    scanf("%lf", &x0);
-    newtonRaphson(x0);
+    double x0 = 0.5, tol = 0.000001;
+    newtonRaphson(x0, tol);
     return 0;
 }
