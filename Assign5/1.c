@@ -23,6 +23,7 @@ int main() {
     // return 0;
     char str[100];
     printf("Enter a string: ");
-    gets(str);
+    fgets(str, 100, stdin);
     capitalizeWords(str);
+    return 0;
 }

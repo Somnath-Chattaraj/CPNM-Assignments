@@ -1,15 +1,15 @@
 #include <stdio.h>
 
 struct Student {
-    char name[50];
+    char name[20];
     int age;
     int totalMarks;
 };
 
 int main() {
-    struct Student students[5];
+    struct Student students[2];
     int sum = 0;
-    for (int i = 0; i < 5; i++) {
+    for (int i = 0; i < 2; i++) {
         printf("Enter details for student %d\n", i + 1);
         printf("Name: ");
         scanf("%s", students[i].name);
@@ -21,10 +21,10 @@ int main() {
     }
 
     printf("\nStudent Information:\n");
-    for (int i = 0; i < 5; i++) {
+    for (int i = 0; i < 2; i++) {
         printf("Name: %s, Age: %d, Total Marks: %d\n", students[i].name, students[i].age, students[i].totalMarks);
     }
 
-    printf("Average Total Marks: %.2f\n", sum / 5.0);
+    printf("Average Total Marks: %.2f\n", sum / 2.0);
     return 0;
 }

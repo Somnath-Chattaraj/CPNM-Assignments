@@ -1,48 +1,33 @@
 #include <stdio.h>
-#include <limits.h>
-#include <string.h>
 
-struct student
-{
-    char name[40];
-    int roll;
-    int marks[3];
-};
+int factorial(int n) {
+    if (n == 0) return 1;
+    int i = n;
+    int p = 1;
+    while (i > 0) {
+        p = i*=p;
+        i--;
+    }
+    return p;
+}
 
+int nCr(int n, int r) {
+    return (factorial(n) / (factorial(r) * factorial((n-r))));
+}
 
 int main() {
-    struct student arr[2];
 
-    for (int i=0; i<2; i++) {
-        char n[40];
-        printf("Enter the name of %d student", i+1);
-        scanf("%s", &arr[i].name);
-
-        printf("Enter the roll of %d student", i+1);
-        scanf("%d", &arr[i].roll);
-
-        printf ("Enter the marks of three subjects: ");
-        for (int j=0; j<3; j++) {
-            scanf("%d", &arr[i].marks[j]);
-
+    int n;
+    printf("Enter numbers of row: ");
+    scanf("%d", &n);
+    for (int i = 1; i<=n; i++) {
+        for (int j=1; j <= ((n-1)*2 + 1); j++) {
+            if (j>=n-i+1 && j<=n+i-1) printf("* ");
+            else printf("  ");
         }
-
+        printf("\n");
     }
-    
-    int max = INT_MIN; 
-    char name[40];
-    int roll; 
-    for (int i=0; i<2; i++) {
-        int s = 0;
-        for (int j=0; j<3; j++) {
-            s += arr[i].marks[j];
-        }
-        if (max < s) {
-            max = s;
-            roll = arr[i].roll;
-            strcpy(name, arr[i].name);
-        }
-    }
-    printf("%s with roll no as: %d has got the highest aggregate marks.\n", name, roll);
+
     return 0;
+
 }
